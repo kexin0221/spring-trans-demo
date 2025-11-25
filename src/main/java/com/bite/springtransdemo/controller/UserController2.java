@@ -1,5 +1,6 @@
 package com.bite.springtransdemo.controller;
 
+import com.bite.springtransdemo.service.LogService;
 import com.bite.springtransdemo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import java.io.IOException;
 public class UserController2 {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LogService logService;
 
     @Transactional
     @RequestMapping("/registry")
@@ -51,5 +55,16 @@ public class UserController2 {
         Integer result = userService.registryUser(name, password);
         log.info("用户注册成功, 影响行数: {}", result);
         throw new IOException();
+    }
+
+    @Transactional
+    @RequestMapping("/r4")
+    public String r4(String name, String password) {
+        // 用户注册
+        Integer result = userService.registryUser(name, password);
+        log.info("用户注册成功, 影响行数: {}", result);
+        Integer logResult = logService.insertLog(name, "用户注册");
+        log.info("日志记录成功, 影响行数: {}", logResult);
+        return "注册成功";
     }
 }
